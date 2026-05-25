@@ -12,7 +12,9 @@ export default defineConfig({
       input: {
         main: './index.html',
         login: './login.html',
-        signup: './signup.html'
+        signup: './signup.html',
+        dashboard: './dashboard.html',
+        'pr-analysis': './pr-analysis.html'
       }
     }
   }
