@@ -73,14 +73,15 @@ RoseReview doesn't just output generic bot feedback. It generates reviews that f
 3. **Open the Dashboard:**
    Navigate to the local server URL provided by Vite (usually `http://localhost:5173`) in your browser to interact with the dashboard.
 
-### 🚀 Deploying to Vercel
+### 🚀 Deploying to Vercel (Unified Deployment)
 
-The project is pre-configured for Vercel deployment using the included `vercel.json` file.
+This project is pre-configured for a **full unified deployment to Vercel**. Vercel will automatically build the Vite frontend as static files, and compile the Fastify backend as a Serverless Node.js Function!
 
 1. Import the repository into your Vercel dashboard.
-2. Vercel will automatically detect the Vite frontend (`apps/web`) and apply the correct build commands.
-3. Vercel is configured with `cleanUrls: true` so extensions like `.html` are gracefully hidden.
-4. **Important:** Update the `destination` URL inside `vercel.json`'s `rewrites` array to point to wherever your Fastify API backend is hosted (e.g., Render, Railway, or AWS) so the frontend can properly route API calls in production!
+2. Ensure the **Framework Preset** is set to `Vite`.
+3. Vercel will automatically detect the `vercel.json` and the root `api/` directory.
+4. Add your API Environment Variables in Vercel (`GROQ_API_KEY`, `GITHUB_TOKEN`, `DATABASE_URL`, `REDIS_URL`).
+5. Click **Deploy**. Vercel handles both the frontend builds and backend proxying instantly!
 
 ---
 
