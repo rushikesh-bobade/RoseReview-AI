@@ -1,0 +1,1240 @@
+/* ============================================================
+   RoseReview — Repository Intelligence & Analytics CSS
+   ============================================================ */
+
+/* ─────────────────────────────────────────────
+   1. LAYOUT & UTILITIES
+   ───────────────────────────────────────────── */
+body.analytics-layout-body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.grid-2-columns {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+}
+
+@media (max-width: 1100px) {
+  .grid-2-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.an-dashboard-row {
+  margin-bottom: 24px;
+}
+
+/* ─────────────────────────────────────────────
+   2. REPOSITORY HERO SECTION & METRIC CARDS
+   ───────────────────────────────────────────── */
+.an-hero-section {
+  margin-bottom: 30px;
+}
+
+.an-hero-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .an-hero-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .an-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Glassmorphic Metric Cards */
+.an-card {
+  position: relative;
+  background: rgba(16, 16, 28, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 125px;
+  transition: transform 0.4s var(--ease-out), border-color 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+  cursor: pointer;
+}
+
+.an-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md), 0 0 25px rgba(255, 255, 255, 0.02);
+}
+
+/* Ambient glow underlays */
+.an-card-glow-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-out);
+  z-index: 0;
+}
+
+.an-card:hover .an-card-glow-bg {
+  opacity: 0.05;
+}
+
+.bg-glow-green {
+  background: radial-gradient(circle at 50% 50%, var(--accent-green) 0%, transparent 60%);
+}
+
+.bg-glow-blue {
+  background: radial-gradient(circle at 50% 50%, var(--accent-blue) 0%, transparent 60%);
+}
+
+.bg-glow-purple {
+  background: radial-gradient(circle at 50% 50%, var(--accent-purple) 0%, transparent 60%);
+}
+
+.bg-glow-rose {
+  background: radial-gradient(circle at 50% 50%, var(--accent-rose) 0%, transparent 60%);
+}
+
+/* Glowing Border highlights for Hover states */
+.an-card--pulse-green:hover { border-color: rgba(34, 197, 94, 0.3); }
+.an-card--pulse-blue:hover { border-color: rgba(59, 130, 246, 0.3); }
+.an-card--pulse-purple:hover { border-color: rgba(139, 92, 246, 0.3); }
+.an-card--pulse-rose:hover { border-color: rgba(244, 63, 94, 0.3); }
+
+.an-card-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.an-card-label {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Pulse indicator dots */
+.an-card-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.an-card-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: pulse-ring 2s infinite;
+}
+
+.pulse-green { background-color: var(--accent-green); }
+.pulse-green::after { border: 1.5px solid var(--accent-green); }
+
+.pulse-blue { background-color: var(--accent-blue); }
+.pulse-blue::after { border: 1.5px solid var(--accent-blue); }
+
+.pulse-purple { background-color: var(--accent-purple); }
+.pulse-purple::after { border: 1.5px solid var(--accent-purple); }
+
+.pulse-rose { background-color: var(--accent-rose); }
+.pulse-rose::after { border: 1.5px solid var(--accent-rose); }
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.an-card-body {
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
+}
+
+.an-counter-container {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+
+.an-counter-number {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.an-counter-pct {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-left: 3px;
+  font-weight: 600;
+}
+
+.an-card-desc {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Background Mini Charts */
+.an-card-chart-bg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 38px;
+  z-index: 0;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────
+   3. AI INSIGHT BANNER
+   ───────────────────────────────────────────── */
+.an-ai-insight-banner {
+  position: relative;
+  background: linear-gradient(90deg, rgba(244, 63, 94, 0.05) 0%, rgba(139, 92, 246, 0.02) 100%);
+  border: 1px solid rgba(244, 63, 94, 0.15);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.an-ai-insight-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--accent-rose);
+}
+
+.ai-banner-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ai-banner-pulse {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent-rose);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent-rose);
+  animation: pulse 1.8s infinite;
+}
+
+.ai-banner-logo-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-rose);
+  letter-spacing: 0.1em;
+}
+
+.ai-banner-content {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+/* ─────────────────────────────────────────────
+   4. HEALTH OBSERVATORY PANELS & TABS
+   ───────────────────────────────────────────── */
+.an-section-panel {
+  position: relative;
+  background: rgba(16, 16, 28, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  overflow: hidden;
+  transition: border-color var(--transition-base);
+}
+
+.an-section-panel:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.panel-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  margin-bottom: 20px;
+}
+
+.an-tabs {
+  display: flex;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+}
+
+.an-tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.an-tab-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.an-tab-btn.active {
+  color: white;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Observability SVG Charts */
+.an-chart-container {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.an-observability-svg {
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.an-observability-svg.active {
+  display: block;
+  animation: chart-fade-in 0.5s var(--ease-out) forwards;
+}
+
+@keyframes chart-fade-in {
+  from { opacity: 0; transform: scale(0.99); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.chart-interactive-nodes circle {
+  cursor: pointer;
+  transition: r var(--transition-fast), fill var(--transition-fast);
+}
+
+.chart-interactive-nodes circle:hover {
+  r: 6px;
+  fill: var(--text-primary);
+}
+
+/* Chart Tooltip Overlay styling */
+.an-chart-tooltip {
+  position: absolute;
+  background: rgba(12, 12, 20, 0.9);
+  border: 1px solid var(--border-hover);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tooltip-date {
+  font-weight: 700;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 4px;
+  margin-bottom: 2px;
+}
+
+.tooltip-val {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tooltip-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.an-chart-legends {
+  display: flex;
+  justify-content: flex-start;
+  gap: 16px;
+  margin-top: 14px;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.bg-rose { background-color: var(--accent-rose); }
+.bg-blue { background-color: var(--accent-blue); }
+.bg-purple { background-color: var(--accent-purple); }
+.bg-cyan { background-color: var(--accent-cyan); }
+.bg-amber { background-color: var(--accent-amber); }
+.bg-red { background-color: var(--accent-red); }
+.bg-green { background-color: var(--accent-green); }
+
+/* ─────────────────────────────────────────────
+   5. RISK CENTER OBSERVABILITY
+   ───────────────────────────────────────────── */
+.risk-widget-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 500px) {
+  .risk-widget-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.risk-gauge-card, .risk-ring-card {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.risk-card-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* Gauge styling */
+.risk-gauge-visual {
+  position: relative;
+  width: 100px;
+  height: 60px;
+}
+
+.risk-svg-gauge {
+  width: 100%;
+  height: 100%;
+}
+
+.risk-gauge-val {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+.risk-gauge-status {
+  font-size: 0.72rem;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* Rings Visual */
+.risk-rings-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.risk-svg-rings {
+  width: 75px;
+  height: 75px;
+}
+
+.risk-rings-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  font-size: 0.64rem;
+}
+
+.legend-color-tag {
+  white-space: nowrap;
+}
+
+/* Risk factors list details */
+.risk-factors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.risk-factor-item {
+  background: rgba(255, 255, 255, 0.015);
+  border-left: 3px solid transparent;
+  border: 1px solid var(--border-subtle);
+  border-left-width: 3px;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.risk-factor-item.border-red { border-left-color: var(--accent-red); }
+.risk-factor-item.border-amber { border-left-color: var(--accent-amber); }
+
+.factor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.factor-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.factor-severity {
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.factor-desc {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* ─────────────────────────────────────────────
+   6. ARCHITECTURE COUPLING GRAPH PANEL
+   ───────────────────────────────────────────── */
+.an-architecture-container {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+@media (max-width: 900px) {
+  .an-architecture-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.an-arch-graph-visual {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255,255,255,0.02);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.arch-graph-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.arch-graph-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.arch-graph-hint {
+  font-size: 0.68rem;
+}
+
+.an-svg-graph-canvas {
+  width: 100%;
+  height: auto;
+}
+
+/* Interactive SVG graph nodes */
+.graph-node-group {
+  cursor: pointer;
+}
+
+.graph-node-group .node-circle {
+  transition: r var(--transition-fast), fill var(--transition-fast), stroke-width var(--transition-fast);
+}
+
+.graph-node-group:hover .node-circle {
+  r: 32px;
+  fill: rgba(255,255,255,0.02);
+  stroke-width: 3px;
+}
+
+.graph-node-group text {
+  pointer-events: none;
+  letter-spacing: 0.05em;
+}
+
+.node-ring-pulse {
+  transform-origin: center;
+  animation: graph-pulse 3s infinite linear;
+}
+
+@keyframes graph-pulse {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 0.1; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+.graph-edge {
+  transition: stroke var(--transition-fast), stroke-width var(--transition-fast);
+}
+
+/* Highlight dependency links */
+.graph-edge.highlighted {
+  stroke: var(--accent-rose) !important;
+  stroke-width: 3px !important;
+  stroke-dasharray: none !important;
+}
+
+.line-pulse-flow {
+  stroke-dasharray: 4 4;
+  animation: dash-pulse 20s linear infinite;
+}
+
+@keyframes dash-pulse {
+  to {
+    stroke-dashoffset: -200;
+  }
+}
+
+/* Arch Dynamic Details Column */
+.an-arch-details-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.details-section-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 8px;
+}
+
+.dynamic-node-info-card {
+  background: rgba(255,255,255,0.015);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  min-height: 95px;
+}
+
+.dynamic-node-info-card.active-node {
+  border-color: rgba(244, 63, 94, 0.2);
+  box-shadow: 0 0 15px rgba(244, 63, 94, 0.03);
+}
+
+#node-info-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+#node-info-desc {
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+/* Hotspots items */
+.hotspots-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hotspot-item {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.hotspot-danger { border-left: 3px solid var(--accent-rose); }
+.hotspot-warning { border-left: 3px solid var(--accent-amber); }
+
+.hotspot-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.hotspot-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.hotspot-desc {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ─────────────────────────────────────────────
+   7. BENCHMARKS SCORECARD PROGRESS METER
+   ───────────────────────────────────────────── */
+.benchmark-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.benchmark-score-card {
+  background: rgba(255,255,255,0.01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: background-color var(--transition-fast);
+}
+
+.benchmark-score-card:hover {
+  background-color: rgba(255,255,255,0.02);
+}
+
+.progress-ring-wrap {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+.compliance-ring {
+  width: 100%;
+  height: 100%;
+}
+
+.compliance-ring-fill {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1.5s var(--ease-out);
+}
+
+.progress-ring-percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.benchmark-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.benchmark-item-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.benchmark-item-desc {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ─────────────────────────────────────────────
+   8. CONTRIBUTOR INTELLIGENCE PANELS
+   ───────────────────────────────────────────── */
+.contributors-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contributor-item-card {
+  background: rgba(255,255,255,0.01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+
+.contrib-top-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.contrib-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.contrib-profile {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.contrib-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.contrib-role {
+  font-size: 0.66rem;
+  color: var(--text-secondary);
+}
+
+.contrib-impact-rank {
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  background: rgba(255,255,255,0.03);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.contrib-stats-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.01);
+}
+
+.contrib-stat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.contrib-stat-box .lbl {
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.contrib-stat-box .val {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.contrib-heatmap-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contrib-heatmap-lbl {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+}
+
+.contrib-heatmap-cells {
+  display: flex;
+  gap: 4px;
+}
+
+.contrib-heatmap-cells div {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.contrib-heatmap-cells .cell-level-0 { background-color: rgba(255, 255, 255, 0.02); }
+.contrib-heatmap-cells .cell-level-1 { background-color: rgba(244, 63, 94, 0.15); }
+.contrib-heatmap-cells .cell-level-2 { background-color: rgba(244, 63, 94, 0.35); }
+.contrib-heatmap-cells .cell-level-3 { background-color: rgba(244, 63, 94, 0.6); }
+.contrib-heatmap-cells .cell-level-4 { background-color: rgba(244, 63, 94, 0.95); }
+
+/* ─────────────────────────────────────────────
+   9. TECHNICAL DEBT PANELS
+   ───────────────────────────────────────────── */
+.tech-debt-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.tech-debt-scorecard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(245, 158, 11, 0.04);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.metric-giant {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: var(--accent-amber);
+  background: rgba(245, 158, 11, 0.1);
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metric-giant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metric-giant-lbl {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.metric-giant-sub {
+  font-size: 0.72rem;
+}
+
+.debt-indicators-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.debt-indicator-box {
+  background: rgba(255,255,255,0.01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  text-align: center;
+}
+
+.debt-indicator-box .lbl {
+  display: block;
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.debt-indicator-box .val {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.legacy-modules-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-sub-title {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+
+.legacy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legacy-item {
+  background: rgba(255,255,255,0.01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.legacy-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.legacy-file {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.legacy-metrics {
+  font-size: 0.65rem;
+}
+
+.legacy-badge {
+  font-size: 0.64rem;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.badge-high-risk {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--accent-red);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.badge-med-risk {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--accent-amber);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* ─────────────────────────────────────────────
+   10. STABILITY FORECAST SECTION
+   ───────────────────────────────────────────── */
+.forecast-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.forecast-graph-container {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255,255,255,0.02);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.an-forecast-svg {
+  width: 100%;
+  height: auto;
+}
+
+.forecast-insights-card {
+  background: rgba(6, 182, 212, 0.03);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+
+.forecast-insights-card .card-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.forecast-text {
+  font-size: 0.76rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────
+   11. LIVE WEBHOOK TERMINAL SCANNER
+   ───────────────────────────────────────────── */
+.an-terminal-wrapper {
+  background: rgba(6, 6, 11, 0.6);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.an-terminal-header {
+  background: rgba(12, 12, 20, 0.8);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-circles {
+  display: flex;
+  gap: 6px;
+}
+
+.circle-btn {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.terminal-title {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.an-terminal-body {
+  padding: 16px;
+  height: 200px;
+  overflow-y: auto;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.term-log-line {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.log-time {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.log-pre {
+  color: var(--accent-rose);
+  flex-shrink: 0;
+}
+
+.log-check {
+  color: var(--accent-green);
+  margin-left: auto;
+}
+
+.info-line { color: rgba(255, 255, 255, 0.75); }
+.warn-line { color: var(--accent-amber); }
+.critical-line { color: var(--accent-red); }
+
+.term-spinner {
+  display: inline-block;
+  animation: spinner-spin 1s steps(10) infinite;
+  color: var(--accent-rose);
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+@keyframes spinner-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ─────────────────────────────────────────────
+   12. MICRO-INTERACTIONS & SHIMMERS
+   ───────────────────────────────────────────── */
+/* Hover shimmer glow for panels */
+.card-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 35px rgba(244, 63, 94, 0.03);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.card-glow:hover::after {
+  opacity: 1;
+}
+
+/* Skeleton Loading Shimmer States (mock placeholder logic if needed) */
+.shimmer-state {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-state::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+  animation: shimmer-swipe 2s infinite;
+}
+
+@keyframes shimmer-swipe {
+  100% { transform: translateX(100%); }
+}

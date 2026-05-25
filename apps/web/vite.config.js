@@ -14,7 +14,8 @@ export default defineConfig({
         login: './login.html',
         signup: './signup.html',
         dashboard: './dashboard.html',
-        'pr-analysis': './pr-analysis.html'
+        'pr-analysis': './pr-analysis.html',
+        analytics: './analytics.html'
       }
     }
   }
