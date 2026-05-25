@@ -1,7 +1,7 @@
 import './dashboard.css';
 import './responsive.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+function init() {
   // ─────────────────────────────────────────────
   // 1. Collapsible Sidebar Navigation
   // ─────────────────────────────────────────────
@@ -224,4 +224,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }, 6000);
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}

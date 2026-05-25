@@ -1,0 +1,357 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String?
+  name         String?
+  githubId     String?  @unique
+  githubToken  String?
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  workspaces    WorkspaceMember[]
+  notifications Notification[]
+  activities    ActivityEvent[]
+}
+
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members      WorkspaceMember[]
+  repositories Repository[]
+  activities   ActivityEvent[]
+}
+
+model WorkspaceMember {
+  id          String   @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        String   @default("member") // admin, maintainer, reviewer, member
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+}
+
+model Repository {
+  id                    String  @id @default(cuid())
+  workspaceId           String
+  githubId              String? @unique
+  owner                 String
+  name                  String
+  defaultBranch         String?
+  isReviewEnabled       Boolean @default(true)
+  benchmarkStrictness   String  @default("standard") // loose, standard, strict
+  deploymentSensitivity String  @default("medium")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace    Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  pullRequests PullRequest[]
+  reviews      Review[]
+  activities   ActivityEvent[]
+
+  @@unique([workspaceId, owner, name])
+}
+
+model PullRequest {
+  id                          String                           @id @default(cuid())
+  repositoryId                String
+  githubNumber                Int
+  title                       String
+  author                      String?
+  headSha                     String?
+  baseBranch                  String?
+  status                      String?
+  createdAt                   DateTime                         @default(now())
+  updatedAt                   DateTime                         @updatedAt
+  repository                  Repository                       @relation(fields: [repositoryId], references: [id])
+  reviews                     Review[]
+  deploymentRisks             DeploymentRisk[]
+  architectureImpactSummaries ArchitectureImpactSummary[]
+  benchmarkReports            BenchmarkReport[]
+  mergeReadinessReports       MergeReadinessReport[]
+  dependencyAnalysisResults   DependencyAnalysisResult[]
+  intelligenceMetadata        RepositoryIntelligenceMetadata[]
+  activities                  ActivityEvent[]
+  timelineEvents              TimelineEvent[]
+
+  @@unique([repositoryId, githubNumber])
+}
+
+model Review {
+  id                  String                   @id @default(cuid())
+  repositoryId        String
+  pullRequestId       String
+  summary             String
+  status              String                   @default("completed")
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  repository          Repository               @relation(fields: [repositoryId], references: [id])
+  pullRequest         PullRequest              @relation(fields: [pullRequestId], references: [id])
+  findings            Finding[]
+  comments            ReviewComment[]
+  generatedPatch      GeneratedPatch?
+  generatedTests      GeneratedTest[]
+  explanationMetadata ExplanationMetadata?
+  lifecycleEvents     ReviewLifecycleEvent[]
+  publicationStatus   ReviewPublicationStatus?
+  publishedReviews    PublishedReview[]
+  dashboardSyncEvents DashboardSyncEvent[]
+  timelineEvents      TimelineEvent[]
+}
+
+model Finding {
+  id          String   @id @default(cuid())
+  reviewId    String
+  filePath    String?
+  title       String
+  description String
+  severity    String
+  suggestion  String?
+  createdAt   DateTime @default(now())
+  review      Review   @relation(fields: [reviewId], references: [id])
+}
+
+model GeneratedPatch {
+  id                         String   @id @default(cuid())
+  reviewId                   String   @unique
+  patch                      String
+  explanation                String?
+  originalCode               String?
+  improvedCode               String?
+  deploymentImpact           String?
+  benchmarkImprovements      String?
+  architectureConsiderations String?
+  createdAt                  DateTime @default(now())
+  review                     Review   @relation(fields: [reviewId], references: [id])
+}
+
+model GeneratedTest {
+  id        String   @id @default(cuid())
+  reviewId  String
+  testName  String
+  content   String
+  framework String?
+  testType  String?
+  createdAt DateTime @default(now())
+  review    Review   @relation(fields: [reviewId], references: [id])
+}
+
+model ReviewComment {
+  id              String   @id @default(cuid())
+  reviewId        String
+  findingId       String?
+  category        String
+  severity        String
+  confidence      Int
+  title           String
+  body            String
+  groupedKey      String?
+  metadata        String?
+  githubPath      String?
+  githubLine      Int?
+  published       Boolean  @default(false)
+  githubCommentId String?
+  createdAt       DateTime @default(now())
+  review          Review   @relation(fields: [reviewId], references: [id])
+}
+
+model ExplanationMetadata {
+  id                    String   @id @default(cuid())
+  reviewId              String   @unique
+  deploymentSummary     String
+  mergeReadinessReason  String
+  architectureReasoning String
+  tradeoffExplanation   String
+  benchmarkSummary      String
+  dependencySummary     String
+  createdAt             DateTime @default(now())
+  review                Review   @relation(fields: [reviewId], references: [id])
+}
+
+model PublishedReview {
+  id              String   @id @default(cuid())
+  reviewId        String
+  githubOwner     String
+  githubRepo      String
+  githubPrNumber  Int
+  githubReviewId  String?
+  githubReviewUrl String?
+  summaryBody     String
+  publishedAt     DateTime @default(now())
+  review          Review   @relation(fields: [reviewId], references: [id])
+}
+
+model ReviewPublicationStatus {
+  id              String    @id @default(cuid())
+  reviewId        String    @unique
+  status          String
+  lastPublishedAt DateTime?
+  lastError       String?
+  attempts        Int       @default(0)
+  updatedAt       DateTime  @updatedAt
+  review          Review    @relation(fields: [reviewId], references: [id])
+}
+
+model DashboardSyncEvent {
+  id       String   @id @default(cuid())
+  reviewId String
+  syncType String
+  status   String
+  details  String?
+  syncedAt DateTime @default(now())
+  review   Review   @relation(fields: [reviewId], references: [id])
+}
+
+model ReviewLifecycleEvent {
+  id        String   @id @default(cuid())
+  reviewId  String
+  state     String
+  reason    String?
+  metadata  String?
+  createdAt DateTime @default(now())
+  review    Review   @relation(fields: [reviewId], references: [id])
+}
+
+model ReviewRegenerationHistory {
+  id          String   @id @default(cuid())
+  reviewId    String
+  target      String
+  status      String
+  initiatedBy String?
+  details     String?
+  createdAt   DateTime @default(now())
+}
+
+model DeploymentRisk {
+  id            String      @id @default(cuid())
+  pullRequestId String
+  score         Int
+  level         String
+  rationale     String
+  createdAt     DateTime    @default(now())
+  pullRequest   PullRequest @relation(fields: [pullRequestId], references: [id])
+}
+
+model ArchitectureImpactSummary {
+  id               String      @id @default(cuid())
+  pullRequestId    String
+  impactLevel      String
+  summary          String
+  impactedModules  String
+  affectedServices String
+  createdAt        DateTime    @default(now())
+  pullRequest      PullRequest @relation(fields: [pullRequestId], references: [id])
+}
+
+model BenchmarkReport {
+  id                String      @id @default(cuid())
+  pullRequestId     String
+  complianceScore   Int
+  violatedStandards String
+  recommendations   String
+  createdAt         DateTime    @default(now())
+  pullRequest       PullRequest @relation(fields: [pullRequestId], references: [id])
+}
+
+model MergeReadinessReport {
+  id                   String      @id @default(cuid())
+  pullRequestId        String
+  status               String
+  score                Int
+  explanations         String
+  requiredImprovements String
+  deploymentCautions   String
+  createdAt            DateTime    @default(now())
+  pullRequest          PullRequest @relation(fields: [pullRequestId], references: [id])
+}
+
+model RepositoryIntelligenceMetadata {
+  id                         String      @id @default(cuid())
+  pullRequestId              String
+  repositoryOverview         String
+  prioritizedFindings        String
+  engineeringRecommendations String
+  createdAt                  DateTime    @default(now())
+  pullRequest                PullRequest @relation(fields: [pullRequestId], references: [id])
+}
+
+model DependencyAnalysisResult {
+  id                          String      @id @default(cuid())
+  pullRequestId               String
+  score                       Int
+  packageUpdateRisk           String
+  modifiedSharedLibraries     String
+  transitiveRiskHints         String
+  apiDependencyChanges        String
+  serviceCouplingImpact       String
+  infrastructureRippleEffects String
+  createdAt                   DateTime    @default(now())
+  pullRequest                 PullRequest @relation(fields: [pullRequestId], references: [id])
+}
+
+model Notification {
+  id            String   @id @default(cuid())
+  userId        String
+  category      String
+  title         String
+  message       String
+  isRead        Boolean  @default(false)
+  referenceId   String?
+  referenceType String?
+  metadata      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ActivityEvent {
+  id            String   @id @default(cuid())
+  workspaceId   String
+  repositoryId  String?
+  pullRequestId String?
+  actorId       String?
+  type          String
+  severity      String
+  summary       String
+  metadata      String?
+  createdAt     DateTime @default(now())
+
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  repository  Repository?  @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  pullRequest PullRequest? @relation(fields: [pullRequestId], references: [id], onDelete: Cascade)
+  actor       User?        @relation(fields: [actorId], references: [id], onDelete: SetNull)
+}
+
+model TimelineEvent {
+  id            String   @id @default(cuid())
+  pullRequestId String
+  reviewId      String?
+  type          String
+  status        String
+  description   String
+  metadata      String?
+  createdAt     DateTime @default(now())
+
+  pullRequest PullRequest @relation(fields: [pullRequestId], references: [id], onDelete: Cascade)
+  review      Review?     @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+}

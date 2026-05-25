@@ -1,14 +1,4 @@
-/* ============================================================
-   RoseReview — Responsive Layout & Adaptive UX Script
-   ============================================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
-  const isDashboard = document.body.classList.contains('dash-layout-body');
-  
-  if (isDashboard) {
-    initResponsiveSystem();
-  }
-});
 
 function initResponsiveSystem() {
   const isMobileViewport = () => window.innerWidth <= 768;
@@ -447,4 +437,17 @@ function debounce(func, wait) {
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
+}
+
+function checkReady() {
+  const isDashboard = document.body.classList.contains('dash-layout-body');
+  if (isDashboard) {
+    initResponsiveSystem();
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', checkReady);
+} else {
+  checkReady();
 }

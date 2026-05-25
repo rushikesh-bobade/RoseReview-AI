@@ -1,7 +1,7 @@
 import './styles.css';
 import './responsive.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+function init() {
   // ─────────────────────────────────────────────
   // 1. Intersection Observer — Scroll Animations
   // ─────────────────────────────────────────────
@@ -457,4 +457,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 35);
     }, 3000);
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
