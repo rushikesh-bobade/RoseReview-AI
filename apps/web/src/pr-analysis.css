@@ -1,0 +1,639 @@
+/* ============================================================
+   RoseReview — PR Analysis Page Specific Styles
+   ============================================================ */
+
+/* ═══════════════ PR Header & Metadata ═══════════════ */
+.pr-metadata-header {
+  background: rgba(16, 16, 28, 0.4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.pr-header-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.pr-header-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.pr-header-badge-status {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-active {
+  background: rgba(244, 63, 94, 0.1);
+  color: var(--accent-rose);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  animation: pulse 2.5s infinite;
+}
+
+.pr-header-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 14px;
+}
+
+.pr-details-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.pr-author {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.code-branch {
+  font-family: var(--font-mono);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-subtle);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--accent-rose);
+  font-size: 0.75rem;
+}
+
+.pr-commits-count, .pr-files-count {
+  color: var(--text-secondary);
+}
+
+.pr-header-stats {
+  display: flex;
+  gap: 16px;
+}
+
+.pr-stat-box {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-lbl {
+  font-size: 0.625rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.stat-val {
+  font-size: 0.875rem;
+}
+
+/* ═══════════════ PR Analytics Cards ═══════════════ */
+.pr-analytics-overview {
+  margin-bottom: 24px;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.overview-card {
+  background: rgba(16, 16, 28, 0.4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  transition: all var(--transition-base);
+}
+
+.overview-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-hover);
+}
+
+.overview-card.card--critical {
+  border-color: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.01);
+}
+
+.overview-card.card--critical:hover {
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.04);
+}
+
+.card-title {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.card-num {
+  font-size: 1.625rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.card-sub {
+  font-size: 0.75rem;
+}
+
+/* ═══════════════ Main Layout Grid ═══════════════ */
+.pr-analysis-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 20px;
+}
+
+.pr-analysis-left-col, .pr-analysis-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pr-section-card {
+  background: rgba(16, 16, 28, 0.4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.card-section-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.card-badge-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ═══════════════ Monaco-style Code Diff Viewer ═══════════════ */
+.card-header-tabs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.tabs-list {
+  display: flex;
+  gap: 8px;
+}
+
+.tab-item {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tab-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+}
+
+.tab-item.active {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+.diff-split-label {
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+  background: rgba(255,255,255,0.02);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.code-diff-viewer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.35);
+  font-family: var(--font-mono);
+  margin-bottom: 16px;
+}
+
+.diff-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.column-original {
+  border-right: 1px solid var(--border-subtle);
+}
+
+.column-header {
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.02);
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.code-editor-lines {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  overflow-x: auto;
+}
+
+.editor-line {
+  display: flex;
+  padding: 2px 0;
+  font-size: 0.6875rem;
+  white-space: pre;
+  color: var(--text-secondary);
+}
+
+.line-no {
+  width: 28px;
+  text-align: right;
+  color: var(--text-tertiary);
+  margin-right: 12px;
+  user-select: none;
+  font-size: 0.625rem;
+}
+
+.line-removed {
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--accent-red);
+}
+
+.line-added {
+  background: rgba(34, 197, 94, 0.08);
+  color: var(--accent-green);
+}
+
+/* Monaco Inline Comments */
+.inline-comment-wrapper {
+  background: rgba(16, 16, 28, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--shadow-md);
+}
+
+.comment-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comment-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-rose), var(--accent-purple));
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comment-author-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.comment-author-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.comment-author-role {
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+}
+
+.comment-severity {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.comment-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.comment-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-primary);
+  border-left: 2px solid var(--accent-rose);
+  padding-left: 10px;
+}
+
+.comment-sub-text {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 12px;
+}
+
+.comment-meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+}
+
+/* ═══════════════ Patch Suggestions & Test Cases ═══════════════ */
+.patch-explanation {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.patch-action-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.patch-success-toast {
+  font-size: 0.8125rem;
+  color: var(--accent-green);
+  font-weight: 600;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all var(--transition-base);
+}
+
+.patch-success-toast.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.test-visual-code {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.test-title {
+  color: var(--text-primary);
+}
+
+.test-line {
+  padding-left: 12px;
+}
+
+/* ═══════════════ Right Column Specifics ═══════════════ */
+
+/* 1. Deployment Observability */
+.observability-risk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.devops-widget {
+  background: rgba(255,255,255,0.015);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.devops-widget-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.devops-gauge-wrap {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.devops-gauge {
+  width: 90px;
+  height: 50px;
+}
+
+.devops-gauge-num {
+  position: absolute;
+  bottom: 15px;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.devops-gauge-desc {
+  font-size: 0.6875rem;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.risky-modules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.risky-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.risky-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dot-red   { background: var(--accent-red); }
+.dot-amber { background: var(--accent-amber); }
+.dot-green { background: var(--accent-green); }
+
+/* 2. Architecture Impact Node Graph */
+.arch-graph-container {
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.1);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+}
+
+.arch-caption {
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* 3. Repository Context Intelligence */
+.context-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.context-item {
+  background: rgba(255,255,255,0.015);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+}
+
+.context-item-header {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.context-item-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* 4. Merge Conflict prevention card */
+.conflict-explanation {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.merge-suggested-order {
+  background: rgba(245,158,11,0.05);
+  border-left: 2px solid var(--accent-amber);
+  padding: 10px 12px;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ═══════════════ Responsive Media Queries ═══════════════ */
+@media (max-width: 1200px) {
+  .pr-analysis-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .overview-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pr-header-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .pr-header-details {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .pr-header-stats {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .observability-risk-grid {
+    grid-template-columns: 1fr;
+  }
+  .code-diff-viewer {
+    grid-template-columns: 1fr;
+  }
+  .column-original {
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+}
+
+@media (max-width: 480px) {
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+  .pr-header-stats {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pr-stat-box {
+    align-items: flex-start;
+  }
+}

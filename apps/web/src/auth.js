@@ -1,4 +1,5 @@
 import './auth.css';
+import './responsive.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const isLoginPage = document.body.classList.contains('auth-page--login');
@@ -199,36 +200,36 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Step Indicator Logic
-    const updateSteps = () => {
-      const name = document.getElementById('signup-fullname')?.value;
-      const email = document.getElementById('signup-email')?.value;
-      const pass = passInput?.value;
-      const conf = confInput?.value;
-      const company = document.getElementById('signup-company')?.value;
+    // Onboarding Wizard State & Logic
+    let activeStep = 1;
 
+    const showStep = (stepNum) => {
+      activeStep = stepNum;
+
+      // Hide all step content panes and show the active one
+      document.querySelectorAll('[data-step-pane]').forEach(pane => {
+        pane.classList.remove('active');
+        if (parseInt(pane.dataset.stepPane, 10) === stepNum) {
+          pane.classList.add('active');
+        }
+      });
+
+      // Update top progress indicators
       const step1 = document.querySelector('[data-step="1"]');
       const step2 = document.querySelector('[data-step="2"]');
       const step3 = document.querySelector('[data-step="3"]');
       const lines = document.querySelectorAll('.auth-step-line');
 
-      let currentStep = 1;
-      if (name && email && validateEmail(email) && pass?.length >= 8 && pass === conf) {
-        currentStep = 2;
-        if (company) currentStep = 3;
-      }
-
-      // Reset
       [step1, step2, step3].forEach(s => s?.classList.remove('auth-step--active', 'auth-step--completed'));
       lines.forEach(l => l.classList.remove('auth-step-line--active'));
 
-      if (currentStep === 1) {
+      if (stepNum === 1) {
         step1?.classList.add('auth-step--active');
-      } else if (currentStep === 2) {
+      } else if (stepNum === 2) {
         step1?.classList.add('auth-step--completed');
         step2?.classList.add('auth-step--active');
         if (lines[0]) lines[0].classList.add('auth-step-line--active');
-      } else if (currentStep === 3) {
+      } else if (stepNum === 3) {
         step1?.classList.add('auth-step--completed');
         step2?.classList.add('auth-step--completed');
         step3?.classList.add('auth-step--active');
@@ -237,9 +238,104 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    document.querySelectorAll('#signup-form input').forEach(input => {
-      input.addEventListener('input', updateSteps);
-    });
+    const validateStep1 = () => {
+      let isValid = true;
+
+      const name = document.getElementById('signup-fullname')?.value?.trim();
+      if (!name || name.length < 2) {
+        showError('field-fullname', 'Full name is required');
+        isValid = false;
+      } else {
+        setSuccess('field-fullname');
+      }
+
+      const email = document.getElementById('signup-email')?.value?.trim();
+      if (!email || !validateEmail(email)) {
+        showError('field-work-email', 'Valid work email is required');
+        isValid = false;
+      } else {
+        setSuccess('field-work-email');
+      }
+
+      const pass = passInput?.value;
+      if (!pass || pass.length < 8) {
+        showError('field-signup-password', 'Password must be at least 8 characters');
+        isValid = false;
+      } else {
+        setSuccess('field-signup-password');
+      }
+
+      const conf = confInput?.value;
+      if (pass !== conf) {
+        showError('field-confirm-password', 'Passwords do not match');
+        isValid = false;
+      } else if (conf) {
+        setSuccess('field-confirm-password');
+      }
+
+      return isValid;
+    };
+
+    const validateStep2 = () => {
+      let isValid = true;
+      const role = document.getElementById('signup-role')?.value;
+      if (!role) {
+        showError('field-role', 'Please select your role');
+        isValid = false;
+      } else {
+        setSuccess('field-role');
+      }
+      return isValid;
+    };
+
+    const validateStep3 = () => {
+      let isValid = true;
+      const terms = document.getElementById('accept-terms');
+      if (!terms || !terms.checked) {
+        showError('field-terms', 'You must accept the terms of service to continue');
+        isValid = false;
+      } else {
+        setSuccess('field-terms');
+      }
+      return isValid;
+    };
+
+    // Next/Back Button Navigation Listeners
+    const nextToTeam = document.getElementById('btn-next-to-team');
+    if (nextToTeam) {
+      nextToTeam.addEventListener('click', () => {
+        if (validateStep1()) {
+          showStep(2);
+        } else {
+          shakeCard('signup-card');
+        }
+      });
+    }
+
+    const prevToAccount = document.getElementById('btn-prev-to-account');
+    if (prevToAccount) {
+      prevToAccount.addEventListener('click', () => {
+        showStep(1);
+      });
+    }
+
+    const nextToConnect = document.getElementById('btn-next-to-connect');
+    if (nextToConnect) {
+      nextToConnect.addEventListener('click', () => {
+        if (validateStep2()) {
+          showStep(3);
+        } else {
+          shakeCard('signup-card');
+        }
+      });
+    }
+
+    const prevToTeam = document.getElementById('btn-prev-to-team');
+    if (prevToTeam) {
+      prevToTeam.addEventListener('click', () => {
+        showStep(2);
+      });
+    }
 
     // GitHub Connect
     const btnConnect = document.getElementById('btn-connect-github');
@@ -259,46 +355,41 @@ document.addEventListener('DOMContentLoaded', () => {
     if (signupForm) {
       signupForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        let isValid = true;
-
-        const name = document.getElementById('signup-fullname').value;
-        if (!name || name.length < 2) { showError('field-fullname', 'Name is required'); isValid = false; }
-
-        const email = document.getElementById('signup-email').value;
-        if (!email || !validateEmail(email)) { showError('field-work-email', 'Valid work email required'); isValid = false; }
-
-        const pass = passInput.value;
-        if (!pass || pass.length < 8) { showError('field-signup-password', 'Password must be at least 8 characters'); isValid = false; }
-
-        const conf = confInput.value;
-        if (pass !== conf) { showError('field-confirm-password', 'Passwords do not match'); isValid = false; }
-
-        const terms = document.getElementById('accept-terms');
-        // fallback logic to add ID to field if missing
-        let termsField = terms ? terms.closest('.auth-field') : null;
-        if(termsField && !termsField.id) termsField.id = 'field-terms';
         
-        if (!terms || !terms.checked) { 
-            if(termsField) showError(termsField.id, 'You must accept the terms'); 
-            isValid = false; 
+        // Full Validation Check
+        const s1 = validateStep1();
+        const s2 = validateStep2();
+        const s3 = validateStep3();
+
+        if (!s1) {
+          showStep(1);
+          shakeCard('signup-card');
+          return;
+        }
+        if (!s2) {
+          showStep(2);
+          shakeCard('signup-card');
+          return;
+        }
+        if (!s3) {
+          showStep(3);
+          shakeCard('signup-card');
+          return;
         }
 
-        if (isValid) {
-          const btn = document.getElementById('btn-signup');
-          if(btn) {
-              const text = btn.querySelector('.auth-btn-text');
-              const loader = btn.querySelector('.auth-btn-loader');
-              if(text) text.style.display = 'none';
-              if(loader) loader.style.display = 'flex';
-              btn.disabled = true;
-          }
-          setTimeout(() => {
-            alert('Account created (simulation)');
-            window.location.href = '/';
-          }, 2000);
-        } else {
-          shakeCard('signup-card');
+        const btn = document.getElementById('btn-signup');
+        if (btn) {
+          const text = btn.querySelector('.auth-btn-text');
+          const loader = btn.querySelector('.auth-btn-loader');
+          if (text) text.style.display = 'none';
+          if (loader) loader.style.display = 'flex';
+          btn.disabled = true;
         }
+        
+        setTimeout(() => {
+          alert('Account created successfully (simulation)');
+          window.location.href = '/';
+        }, 2000);
       });
     }
   }
