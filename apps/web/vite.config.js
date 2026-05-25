@@ -7,6 +7,13 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    assetsInlineLimit: 0
+    assetsInlineLimit: 0,
+    rollupOptions: {
+      input: {
+        main: './index.html',
+        login: './login.html',
+        signup: './signup.html'
+      }
+    }
   }
 })

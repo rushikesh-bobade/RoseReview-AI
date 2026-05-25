@@ -227,6 +227,89 @@ a { color: inherit; text-decoration: none; }
 @keyframes authShake { 0%,100%{transform: translateX(0)} 20%,60%{transform: translateX(-6px)} 40%,80%{transform: translateX(6px)} }
 .auth-shake { animation: authShake 0.5s ease; }
 
+/* Step-by-Step Onboarding Wizard */
+.auth-step-pane {
+  display: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+
+.auth-step-pane.active {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: authPaneFadeIn 0.4s var(--ease-out) forwards;
+}
+
+.auth-step-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  width: 100%;
+}
+
+.auth-step-actions .btn--step-prev,
+.auth-step-actions .auth-submit-btn,
+.auth-step-actions .btn--step-next {
+  flex: 1;
+}
+
+.btn--step-next {
+  width: 100%;
+  padding: 13px 20px;
+  margin-top: 6px;
+  background: linear-gradient(135deg, var(--accent-rose), var(--accent-rose-dark));
+  color: white;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.2);
+  font-size: 0.9375rem;
+  font-family: var(--font-sans);
+}
+
+.btn--step-next:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow-rose);
+  filter: brightness(1.05);
+}
+
+.btn--step-prev {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+  padding: 13px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all var(--transition-base);
+  font-size: 0.9375rem;
+  font-family: var(--font-sans);
+  text-align: center;
+}
+
+.btn--step-prev:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-hover);
+}
+
+@keyframes authPaneFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 1024px) {
   .auth-left { flex: 0 0 45%; padding: 36px; }
   .auth-right { padding: 36px; }
