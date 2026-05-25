@@ -3,16 +3,35 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "ts-node-dev --respawn src/index.ts"
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:push": "prisma db push"
   },
   "dependencies": {
-    "fastify": "^5.0.0",
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^10.0.2",
+    "@fastify/jwt": "^10.1.0",
+    "@fastify/rate-limit": "^10.3.0",
     "@prisma/client": "^5.0.0",
-    "octokit": "^2.0.0"
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^16.5.0",
+    "fastify": "^5.0.0",
+    "fastify-plugin": "^5.0.1",
+    "groq-sdk": "^0.30.0",
+    "octokit": "^2.0.0",
+    "pino": "^9.9.4",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/node": "^22.15.29",
+    "pino-pretty": "^13.1.2",
+    "prisma": "^5.0.0",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.4.0",
-    "prisma": "^5.0.0"
+    "typescript": "^5.4.0"
   }
 }
