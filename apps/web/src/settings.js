@@ -370,10 +370,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnSettingsConnectGh) {
     btnSettingsConnectGh.addEventListener('click', () => {
       btnSettingsConnectGh.textContent = 'Connecting...';
-      const popup = window.open('http://localhost:3001/api/v1/auth/github', 'GitHubAuth', 'width=600,height=700');
+      
+      const ghClientId = 'Ov23liarYizusohYEor6';
+      const ghCallback = encodeURIComponent('http://localhost:3001/api/v1/auth/github/callback');
+      const ghScope = encodeURIComponent('read:user user:email repo');
+      const ghUrl = `https://github.com/login/oauth/authorize?client_id=${ghClientId}&redirect_uri=${ghCallback}&scope=${ghScope}`;
+      const popup = window.open(ghUrl, 'GitHubAuth', 'width=600,height=700,left=400,top=100');
       
       const checkClosed = setInterval(() => {
-         if (popup && popup.closed) {
+         if (!popup || popup.closed) {
            clearInterval(checkClosed);
            localStorage.setItem('isGithubConnected', 'true');
            checkGithubStatus();
