@@ -341,17 +341,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnConnect = document.getElementById('btn-connect-github');
     if (btnConnect) {
       btnConnect.addEventListener('click', () => {
-        // Open GitHub OAuth in a popup window
-        window.open('http://localhost:3001/api/v1/auth/github', 'GitHubAuth', 'width=600,height=700');
-        
-        // Update the UI to show it's connected
-        btnConnect.textContent = 'Connected ✓';
-        btnConnect.disabled = true;
-        btnConnect.style.background = 'var(--accent-green)';
-        btnConnect.style.borderColor = 'var(--accent-green)';
-        btnConnect.style.color = 'white';
-        const container = document.getElementById('github-connect');
-        if(container) container.style.borderColor = 'var(--accent-green)';
+        btnConnect.innerHTML = '<span class="auth-spinner" style="width:14px;height:14px;margin-right:8px;border-width:2px;display:inline-block;animation:authSpin 0.6s linear infinite;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;"></span> Connecting...';
+        btnConnect.style.opacity = '0.8';
+        window.location.href = 'http://localhost:3001/api/v1/auth/github';
       });
     }
 
