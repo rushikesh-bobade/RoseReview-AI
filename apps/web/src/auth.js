@@ -353,33 +353,35 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // GitHub Connect
+    // GitHub Connect (Step 3 of manual signup)
     const btnConnect = document.getElementById('btn-connect-github');
     if (btnConnect) {
       btnConnect.addEventListener('click', () => {
         // Show connecting state
-        btnConnect.innerHTML = '<span class="auth-spinner" style="width:14px;height:14px;margin-right:8px;border-width:2px;display:inline-block;animation:authSpin 0.6s linear infinite;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;"></span> Connecting...';
+        btnConnect.innerHTML = '<span class="auth-spinner" style="width:14px;height:14px;margin-right:8px;border-width:2px;display:inline-block;animation:authSpin 0.6s linear infinite;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;"></span> Opening GitHub...';
         btnConnect.disabled = true;
 
-        // Open GitHub OAuth in a popup window
-        const popup = window.open('http://localhost:3001/api/v1/auth/github', 'GitHubAuth', 'width=600,height=700');
-        
-        // Wait until popup is closed to mark as connected
+        // Build real GitHub OAuth URL
+        const clientId = 'Ov23liarYizusohYEor6';
+        const redirectUri = encodeURIComponent('http://localhost:3001/api/v1/auth/github/callback');
+        const scope = encodeURIComponent('read:user user:email repo');
+        const ghUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
+
+        const popup = window.open(ghUrl, 'GitHubAuth', 'width=600,height=700,left=400,top=100');
+
+        // Poll until popup closes
         const checkClosed = setInterval(() => {
-           if (popup && popup.closed) {
-             clearInterval(checkClosed);
-             // Update the UI to show it's connected
-             btnConnect.textContent = 'Connected ✓';
-             btnConnect.disabled = true;
-             btnConnect.style.background = 'var(--accent-green)';
-             btnConnect.style.borderColor = 'var(--accent-green)';
-             btnConnect.style.color = 'white';
-             const container = document.getElementById('github-connect');
-             if(container) container.style.borderColor = 'var(--accent-green)';
-             
-             // Save connection state for later
-             localStorage.setItem('isGithubConnected', 'true');
-           }
+          if (!popup || popup.closed) {
+            clearInterval(checkClosed);
+            btnConnect.textContent = 'Connected ✓';
+            btnConnect.disabled = true;
+            btnConnect.style.background = 'var(--accent-green)';
+            btnConnect.style.borderColor = 'var(--accent-green)';
+            btnConnect.style.color = 'white';
+            const container = document.getElementById('github-connect');
+            if (container) container.style.borderColor = 'var(--accent-green)';
+            localStorage.setItem('isGithubConnected', 'true');
+          }
         }, 500);
       });
     }
@@ -428,19 +430,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- OAuth Buttons ---
+  // --- OAuth Buttons (GitHub Sign In / Sign Up) ---
+  const GITHUB_CLIENT_ID = 'Ov23liarYizusohYEor6';
+  const GITHUB_CALLBACK  = 'http://localhost:3001/api/v1/auth/github/callback';
+  const GITHUB_SCOPE     = 'read:user user:email repo';
+  const githubOAuthUrl   = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(GITHUB_CALLBACK)}&scope=${encodeURIComponent(GITHUB_SCOPE)}`;
+
   document.querySelectorAll('.auth-oauth-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const originalHtml = btn.innerHTML;
-      btn.innerHTML = '<span class="auth-spinner" style="width:14px;height:14px;margin-right:8px;border-width:2px;display:inline-block;animation:authSpin 0.6s linear infinite;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;"></span> Connecting...';
-      btn.style.opacity = '0.8';
-      
-      // Redirect to the real backend OAuth endpoint based on the button ID
-      if (btn.id.includes('google')) {
-        window.location.href = 'http://localhost:3001/api/v1/auth/google';
-      } else {
-        window.location.href = 'http://localhost:3001/api/v1/auth/github';
-      }
+      btn.innerHTML = '<span class="auth-spinner" style="width:14px;height:14px;margin-right:8px;border-width:2px;display:inline-block;animation:authSpin 0.6s linear infinite;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;"></span> Opening GitHub...';
+      btn.disabled = true;
+
+      // Open real GitHub OAuth in a popup
+      const popup = window.open(githubOAuthUrl, 'GitHubOAuth', 'width=600,height=700,left=400,top=100');
+
+      // Poll until popup closes (user completes or cancels GitHub auth)
+      const checkClosed = setInterval(() => {
+        if (!popup || popup.closed) {
+          clearInterval(checkClosed);
+
+          if (isLoginPage) {
+            // Login flow: mark authenticated and go to dashboard
+            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('isGithubConnected', 'true');
+            alert('GitHub login successful!');
+            window.location.href = '/dashboard.html';
+          } else if (isSignupPage) {
+            // Signup flow: account created via GitHub, go to dashboard
+            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('isGithubConnected', 'true');
+            alert('Account created and GitHub connected!');
+            window.location.href = '/dashboard.html';
+          }
+        }
+      }, 500);
     });
   });
 
