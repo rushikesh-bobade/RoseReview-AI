@@ -4,6 +4,19 @@ import { addTrackedRepo, renderRepoDropdown, selectRepo, parsePrUrl, initRepoSta
 
 function init() {
   // ─────────────────────────────────────────────
+  // 0. GitHub OAuth Callback Handler
+  // ─────────────────────────────────────────────
+  // When GitHub redirects back to /dashboard.html?github_auth=success,
+  // set auth state in localStorage so the session is persisted.
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('github_auth') === 'success') {
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('isGithubConnected', 'true');
+    // Clean the URL without reloading
+    window.history.replaceState({}, document.title, '/dashboard.html');
+  }
+
+  // ─────────────────────────────────────────────
   // 1. Collapsible Sidebar Navigation
   // ─────────────────────────────────────────────
   const sidebar = document.getElementById('dash-sidebar');
