@@ -644,7 +644,12 @@ The architectural boundaries have been tightened up. We're now correctly using t
         // Fetch real PR data
         const res = await fetch(`/api/v1/github/pull-requests/${prNumber}?owner=${owner}&repo=${repo}`);
         if (!res.ok) {
-          throw new Error('PR not found or inaccessible');
+          let errMsg = 'PR not found or inaccessible';
+          try {
+            const errData = await res.json();
+            if (errData && errData.message) errMsg = errData.message;
+          } catch(e) {}
+          throw new Error(errMsg);
         }
         const prData = await res.json();
         const pr = prData.data;
