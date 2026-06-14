@@ -82,6 +82,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Login Specific ---
   if (isLoginPage) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailParam = urlParams.get('email');
+    if (emailParam) {
+      const emailInput = document.getElementById('login-email');
+      if (emailInput) {
+         emailInput.value = emailParam;
+         setTimeout(() => emailInput.focus(), 100);
+      }
+    }
+
     // Spinner Animation
     const spinnerEl = document.querySelector('.auth-term-spinner');
     if (spinnerEl) {
@@ -130,8 +140,14 @@ document.addEventListener('DOMContentLoaded', () => {
               btn.disabled = true;
           }
           setTimeout(() => {
-            alert('Login successful (simulation)');
-            window.location.href = '/';
+            const rememberMe = document.getElementById('remember-me')?.checked;
+            if (rememberMe) {
+              localStorage.setItem('isAuthenticated', 'true');
+            } else {
+              sessionStorage.setItem('isAuthenticated', 'true');
+            }
+            alert('Login successful!');
+            window.location.href = '/dashboard.html';
           }, 2000);
         } else {
           shakeCard('login-card');
@@ -337,21 +353,35 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // GitHub Connect
+    // GitHub Connect (Step 3 of manual signup)
     const btnConnect = document.getElementById('btn-connect-github');
     if (btnConnect) {
       btnConnect.addEventListener('click', () => {
-        // Open GitHub OAuth in a popup window
-        window.open('http://localhost:3001/api/v1/auth/github', 'GitHubAuth', 'width=600,height=700');
-        
-        // Update the UI to show it's connected
-        btnConnect.textContent = 'Connected ✓';
+        // Show connecting state
+        btnConnect.innerHTML = '<span class="auth-spinner" style="width:14px;height:14px;margin-right:8px;border-width:2px;display:inline-block;animation:authSpin 0.6s linear infinite;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;"></span> Opening GitHub...';
         btnConnect.disabled = true;
-        btnConnect.style.background = 'var(--accent-green)';
-        btnConnect.style.borderColor = 'var(--accent-green)';
-        btnConnect.style.color = 'white';
-        const container = document.getElementById('github-connect');
-        if(container) container.style.borderColor = 'var(--accent-green)';
+
+        // Build real GitHub OAuth URL (no redirect_uri — uses registered default)
+        const clientId = 'Ov23liarYizusohYEor6';
+        const scope = encodeURIComponent('read:user user:email repo');
+        const ghUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=${scope}`;
+
+        const popup = window.open(ghUrl, 'GitHubAuth', 'width=600,height=700,left=400,top=100');
+
+        // Poll until popup closes
+        const checkClosed = setInterval(() => {
+          if (!popup || popup.closed) {
+            clearInterval(checkClosed);
+            btnConnect.textContent = 'Connected ✓';
+            btnConnect.disabled = true;
+            btnConnect.style.background = 'var(--accent-green)';
+            btnConnect.style.borderColor = 'var(--accent-green)';
+            btnConnect.style.color = 'white';
+            const container = document.getElementById('github-connect');
+            if (container) container.style.borderColor = 'var(--accent-green)';
+            localStorage.setItem('isGithubConnected', 'true');
+          }
+        }, 500);
       });
     }
 
@@ -391,26 +421,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         setTimeout(() => {
-          alert('Account created successfully (simulation)');
-          window.location.href = '/';
+          alert('Account created successfully!');
+          const email = document.getElementById('signup-email')?.value || '';
+          window.location.href = '/login.html?email=' + encodeURIComponent(email);
         }, 2000);
       });
     }
   }
 
-  // --- OAuth Buttons ---
+  // --- OAuth Buttons (GitHub Sign In / Sign Up) ---
+  const GITHUB_CLIENT_ID = 'Ov23liarYizusohYEor6';
+  const GITHUB_SCOPE     = 'read:user user:email repo';
+  // No redirect_uri — GitHub uses the registered default callback from OAuth App settings
+  const githubOAuthUrl   = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=${encodeURIComponent(GITHUB_SCOPE)}`;
+
   document.querySelectorAll('.auth-oauth-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const originalHtml = btn.innerHTML;
-      btn.innerHTML = '<span class="auth-spinner" style="width:14px;height:14px;margin-right:8px;border-width:2px;display:inline-block;animation:authSpin 0.6s linear infinite;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;"></span> Connecting...';
-      btn.style.opacity = '0.8';
-      
-      // Redirect to the real backend OAuth endpoint based on the button ID
-      if (btn.id.includes('google')) {
-        window.location.href = 'http://localhost:3001/api/v1/auth/google';
-      } else {
-        window.location.href = 'http://localhost:3001/api/v1/auth/github';
-      }
+      btn.innerHTML = '<span class="auth-spinner" style="width:14px;height:14px;margin-right:8px;border-width:2px;display:inline-block;animation:authSpin 0.6s linear infinite;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;"></span> Opening GitHub...';
+      btn.disabled = true;
+
+      // Open real GitHub OAuth in a popup
+      const popup = window.open(githubOAuthUrl, 'GitHubOAuth', 'width=600,height=700,left=400,top=100');
+
+      // Poll until popup closes (user completes or cancels GitHub auth)
+      const checkClosed = setInterval(() => {
+        if (!popup || popup.closed) {
+          clearInterval(checkClosed);
+
+          if (isLoginPage) {
+            // Login flow: mark authenticated and go to dashboard
+            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('isGithubConnected', 'true');
+            alert('GitHub login successful!');
+            window.location.href = '/dashboard.html';
+          } else if (isSignupPage) {
+            // Signup flow: account created via GitHub, go to dashboard
+            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('isGithubConnected', 'true');
+            alert('Account created and GitHub connected!');
+            window.location.href = '/dashboard.html';
+          }
+        }
+      }, 500);
     });
   });
 
